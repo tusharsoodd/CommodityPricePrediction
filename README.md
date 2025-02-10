@@ -1,6 +1,6 @@
 # Schwartz-Smith Commodity Price Analysis Tool
 
-A sophisticated implementation of the Schwartz-Smith model for commodity price analysis and forecasting, featuring Extended Kalman Filter state estimation and automated parameter optimization.
+An implementation of the Schwartz-Smith model for commodity price analysis and forecasting, featuring Extended Kalman Filter state estimation and automated parameter optimization.
 
 ## Overview
 
