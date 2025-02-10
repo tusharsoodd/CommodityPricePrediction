@@ -51,7 +51,7 @@ class SchwartzSmithModel:
         """
         # Map intervals to dt values
         interval_map = {
-            "1m": 1/(252*390),  # 390 minutes per trading day
+            "1m": 1/(252*390),  
             "5m": 5/(252*390),
             "15m": 15/(252*390),
             "30m": 30/(252*390),
@@ -279,25 +279,3 @@ class ParameterOptimizer:
         print(f"sigma_seasonal: {params[2]:.3f}")
         print(f"kappa: {params[3]:.3f}")
         print(f"rho: {params[4]:.3f}")
-
-
-# # Example usage:
-# data_fetcher = DataFetcher()
-# price_data = data_fetcher.fetch_multiple({
-#     "CL=F": "WTI Crude Oil",
-#     "BTC-USD": "Bitcoin"
-# })
-
-# model = SchwartzSmithModel(interval="1m")  # Explicitly specify interval
-
-# # To run with optimization:
-# optimizer = ParameterOptimizer(model, price_data["CL=F"])
-# optimal_params = optimizer.optimize()
-# _, _, predictions_ss, train_idx, diagnostics = model.fit_predict(price_data["CL=F"], optimal_params)
-
-# # Or to skip optimization and use saved parameters:
-# _, _, predictions_ss, train_idx, diagnostics = model.load_and_predict(price_data["CL=F"])
-
-# print_diagnostics(*diagnostics)
-# plot_price_predictions(price_data["CL=F"], train_idx, predictions_ss)
-# plot_diagnostic_charts(price_data["CL=F"], train_idx, model.filtered_params, predictions_ss)

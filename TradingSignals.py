@@ -1,3 +1,5 @@
+#Not yet supported
+
 class TradingSignals:
     def __init__(self, schwartz_smith_model, confidence_level=1.96):  # 95% confidence interval
         self.model = schwartz_smith_model

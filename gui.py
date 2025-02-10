@@ -12,15 +12,15 @@ import matplotlib.pyplot as plt
 # Hide streamlit error messages
 st.set_option('client.showErrorDetails', False)
 
+st.sidebar.markdown("### Author")
+st.sidebar.markdown("[Tushar Sood](https://www.linkedin.com/in/tusharsoodd/)")
 
-# Create navigation links in the sidebar
 st.sidebar.title("Navigation")
 pages = {
     "Analysis": "Analysis",
     "About this project": "About"
 }
 
-# Get the current page from URL parameters
 page = st.experimental_get_query_params().get("page", ["Analysis"])[0]
 
 # Display navigation links
@@ -252,7 +252,6 @@ if page == "Analysis":
 
 elif page == "About this project":
     try:
-        # Read and display the blog content
         with open('blog.txt', 'r', encoding='utf-8') as file:
             blog_content = file.read()
         
