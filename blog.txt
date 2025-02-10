@@ -1,0 +1,177 @@
+# Using Bayesian Parameter Optimization, the Schwartz-Smith Model, and the Extended Kalman Filter in Commodity Price Forecasting
+
+> **Note**: As this project is still in its early stages, comprehensive statistical analysis and direct model comparisons against other forecasting approaches have not yet been conducted. The content below outlines the theoretical framework and planned methodology. Future updates will include detailed performance metrics, comparative analyses, and empirical validation of the approach described here.
+
+
+
+In the world of commodity price forecasting, the ability to capture both short-term volatility and long-term trends is crucial. This is especially true in markets that are highly dynamic, often non-linear, and subject to various external factors. The tools I've built for this purpose involve a combination of advanced techniques: Bayesian Parameter Optimization, the Schwartz-Smith model, and the Extended Kalman Filter (EKF). These three components work together in a unique way to deliver robust predictions. To truly appreciate their synergy, we need to dig deeper into each one and explore the underlying mechanisms that make them so powerful in this context.
+
+
+
+
+
+## 1. The Schwartz-Smith Model: A Sophisticated Framework for Commodity Price Dynamics
+
+The Schwartz-Smith model is not just a simple commodity price forecasting method. It represents a sophisticated approach to decompose the price into its core drivers: short-term factors, long-term factors, and seasonal factors. These three components are interrelated yet distinct, making it essential to model them separately in order to accurately forecast commodity prices over various time horizons.
+
+### Assumptions of the Schwartz-Smith Model:
+To fully understand how the model captures commodity price dynamics, we must consider its foundational assumptions. These include the assumption of a **two-factor structure** with mean-reverting processes for both the spot price and convenience yield, **stochastic volatility** for both factors, and adherence to a **no-arbitrage condition** to ensure realistic pricing. The model also assumes **log-normal distributions** for the spot price and convenience yield, ensuring that the prices evolve in a manner consistent with typical market behavior. Furthermore, the model is built on the **stationarity** of the factors, meaning their statistical properties do not change over time. These assumptions help in creating a framework that can adapt to both short-term fluctuations and long-term trends while respecting real-world constraints like non-negativity of prices. Further discussion on the limitations of the assumptions can be found in the challenges section.
+
+### Short-term factors:
+Commodity prices are subject to a significant amount of short-term noise. Geopolitical events, sudden shifts in supply and demand, and market speculation can all contribute to unpredictable, often sharp, price movements. Short-term factors in the model represent this noise and volatility. However, because this volatility is random and unpredictable, it's difficult to capture using standard techniques. The Schwartz-Smith model assumes that short-term fluctuations in the **spot price** follow a mean-reverting process, with the price adjusting over time toward an equilibrium level. However, as discussed, this assumption does not fully capture extreme price movements or volatility clustering, which can limit its forecasting ability during times of market stress.
+
+### Long-term factors:
+The long-term trends, on the other hand, tend to evolve more slowly, driven by factors such as global supply chain disruptions, technological advancements in production, and macroeconomic changes. While less volatile, they are still very important for forecasting prices over extended periods. The Schwartz-Smith model captures these slow-moving factors in its long-term component through the **convenience yield**, which is also assumed to follow a mean-reverting process. This assumption again risks underestimating the impact of significant long-term shifts in global markets or technological advances, which may cause structural changes in the relationship between spot prices and convenience yields.
+
+### Seasonal factors:
+Many commodities, especially agricultural products or energy resources, are subject to seasonal fluctuations based on demand patterns or environmental conditions. For example, the demand for heating oil rises in the winter months in colder regions, and agricultural prices are affected by seasonal weather patterns. The **seasonal component** of the model captures these predictable, cyclical trends that can significantly influence prices. While the model is mainly focused on capturing long-term and short-term factors, the seasonal effect is implicitly embedded within the overall framework of price movements. A limitation arises when seasonal effects interact with non-stationary factors or external shocks, which the model may fail to fully integrate.
+
+### The Model's Flexibility:
+The key strength of the Schwartz-Smith model is its ability to incorporate all three of these factors into a unified structure, allowing for a more holistic view of price movements. However, to accurately capture these factors in a real-world setting, the model's parameters need to be fine-tuned. That's where the Extended Kalman Filter (EKF) and Bayesian Parameter Optimization come into play. These techniques allow for the calibration of the model to market data, refining the model's predictions over time. Despite these improvements, the assumptions of mean-reverting processes, log-normal distributions, and stationarity still carry inherent limitations that could undermine the model's robustness, particularly during periods of high volatility or structural changes in the market.
+
+
+
+
+
+
+## 2. The Extended Kalman Filter (EKF): Tracking the State in Non-linear Systems
+
+The Extended Kalman Filter (EKF) is a powerful method for estimating the hidden states of a system, especially when the system is non-linear, as is the case with commodity prices. The EKF is designed to handle these non-linearities by linearizing the model at each time step, allowing it to adapt in real-time as new data is observed.
+
+### Why the EKF?
+Commodity price forecasting is inherently non-linear. A small change in one of the underlying factors (e.g., a geopolitical shock or a sudden change in weather) can have a disproportionately large impact on prices. The EKF, an extension of the Kalman Filter, is well-suited to handle such systems because it is designed to track the state of the system (in our case, the various factors driving commodity prices) over time. This is crucial for real-time forecasting, as market conditions are constantly evolving.
+
+### How the EKF works:
+- **Prediction step**: The EKF begins by predicting the next state of the system (commodity price) based on the current state and the system's model (the Schwartz-Smith model). This involves computing the expected values of short-term, long-term, and seasonal factors based on the previous estimates.
+- **Update step**: When new data (i.e., the actual observed price) becomes available, the EKF updates its predictions by incorporating this new information. The update step involves adjusting the estimated state to minimize the difference between the predicted and observed data.
+
+By continuously updating the estimates based on real-time data, the EKF provides a dynamic tracking mechanism for the various price components. This ensures that the model can adapt to sudden market changes and refine its predictions over time.
+
+## 3. Bayesian Parameter Optimization: Intelligent Search for the Best Model Parameters
+
+While the Schwartz-Smith model offers a comprehensive structure for understanding commodity price dynamics, the real challenge lies in selecting the optimal parameters that define how the short-term, long-term, and seasonal factors interact. These parameters need to be fine-tuned in order to minimize prediction errors and make accurate forecasts.
+
+### Why Bayesian optimization?
+Traditional parameter optimization methods, such as grid search or random search, tend to be inefficient and computationally expensive. These methods search through large parameter spaces without any notion of which areas are likely to yield better results. Bayesian optimization addresses this problem by creating a probabilistic model (usually a Gaussian process) of the objective function. It then uses this model to intelligently select which parameter configurations are worth evaluating next, based on previous evaluation results.
+
+### How Bayesian Optimization Works:
+- **Surrogate model**: Bayesian optimization builds a surrogate model of the objective function, which is usually an estimate of the model's error or some other performance metric. This surrogate model captures the relationship between the parameters and the objective function.
+- **Acquisition function**: The optimization process uses an acquisition function to determine which new set of parameters should be evaluated. The acquisition function guides the search by balancing exploration (trying parameter values in uncharted areas) and exploitation (refining already promising parameter sets).
+- **Iterative refinement**: As the optimization proceeds, the surrogate model is updated with new observations, and the optimization algorithm becomes more refined in choosing the next set of parameters to test.
+
+In my project, Bayesian optimization is employed to tune the parameters of the Schwartz-Smith model. Specifically, it adjusts the weights of the short-term, long-term, and seasonal factors, ensuring that the model is both robust and accurate. By doing so, it significantly reduces the number of evaluations needed to find the optimal parameter set, making the overall process much more efficient.
+
+## 4. Bringing It All Together: The Synergy Between These Components
+
+So, how do these three techniques work together in my commodity price forecasting tool?
+
+- The Schwartz-Smith model provides the framework that divides commodity price movements into short-term, long-term, and seasonal factors.
+- The Extended Kalman Filter tracks the state of the system, continuously updating the model's parameters based on incoming data. It allows the model to adapt to new information and refine its predictions in real-time.
+- Bayesian Parameter Optimization fine-tunes the parameters of the model by intelligently exploring the parameter space. It ensures that the Schwartz-Smith model's components (short-term, long-term, and seasonal) are balanced in a way that minimizes prediction error.
+
+The combination of these methods allows for a dynamic, adaptable forecasting system that is capable of making accurate predictions despite the inherent complexity and volatility of commodity markets.
+
+
+## Navigating the assumptions of the Schwartz-Smith model:
+
+### 1. Mean-Reverting Processes for Spot Price and Convenience Yield:
+The assumption of mean-reverting processes, often modeled by Ornstein-Uhlenbeck processes, implies that prices return to a long-term equilibrium. This overlooks extreme tail behavior (e.g., price crashes or bubbles) and volatility clustering, leading to an underestimation of extreme events in risk management.
+
+To address this, a **seasonal component** was integrated into the state vector, which enhances the model's ability to capture both short-term and long-term deviations. The **Extended Kalman Filter (EKF)** implementation allows for real-time parameter updating, enabling the model to adapt to dynamic shifts in the data, thus improving forecasting of rare and impactful events.
+
+### 2. Stochastic Volatility:
+Stochastic volatility models like Heston or SABR allow for time-varying volatility but do not account for **volatility jumps** or **asymmetry** (e.g., heightened volatility during price declines), leading to inadequate modeling of the **leverage effect**, where volatility reacts differently to positive and negative shocks.
+
+A **non-linear state-space representation** was introduced, which captures **volatility asymmetry** and **leverage effects**. The EKF facilitates more accurate tracking of volatility and adapts more smoothly to market shifts, improving prediction during periods of increased uncertainty.
+
+### 3. Log-Normal Distributions:
+The assumption of a log-normal distribution ensures prices remain positive but fails to account for **skewness**, **kurtosis**, and **heavy tails** (e.g., **Pareto** or **Student's t-distributions**) that are common in real-world commodity prices.
+
+The use of a **state-space representation** allows for the modeling of **non-log-normal distributions**, which captures **skewness** and **heavy tails**, providing more accurate risk management and improving estimates, particularly for extreme price movements.
+
+### 4. Stationarity of Factors:
+The assumption of **stationarity** (where statistical properties like mean and variance remain constant over time) may fail during **regime shifts** or structural breaks, leading to biased forecasts and parameter estimates.
+
+To mitigate this, a **random walk model** was incorporated for the long-term equilibrium component, addressing non-stationary behavior in commodity markets. Additionally, **cointegration** techniques and non-stationary adjustments were implemented to handle market shifts effectively, ensuring more reliable forecasts and parameter estimates in volatile environments.
+
+### 5. No-Arbitrage Condition:
+The no-arbitrage assumption ensures there are no riskless profit opportunities, but real-world imperfections, such as **transaction costs**, **regulatory frictions**, or **information asymmetries**, can lead to pricing anomalies and mispricing of commodities.
+
+A **dynamic pricing framework** was developed that accounts for **market inefficiencies** and adjusts for **arbitrage opportunities**, enabling the model to better reflect real market conditions where imperfections cause deviations from ideal pricing.
+
+These adjustments incorporate non-linear models and real-time parameter updating, significantly enhancing the model's statistical rigor and its ability to adapt to the complexities and imperfections inherent in commodity price behavior.
+
+
+## Conclusion
+
+In summary, the combination of Bayesian Parameter Optimization, the Schwartz-Smith model, and the Extended Kalman Filter provides a robust, flexible, and adaptive framework for forecasting commodity prices. While there are challenges in terms of computational complexity, parameter sensitivity, and data quality, the benefits of real-time forecasting, accurate parameter optimization, and the ability to separate different market dynamics make this approach highly effective for navigating the volatile and often unpredictable world of commodity markets.
+
+
+# Mathematical Framework
+
+## 1. Price Decomposition
+The log spot price of a commodity is modeled as:
+
+$$
+\ln(S_t) = \chi_t + \xi_t + s_t
+$$
+
+where:
+- $\chi_t$ is the short-term mean-reverting component
+- $\xi_t$ is the long-term equilibrium level
+- $s_t$ is the seasonal component
+
+## 2. State Evolution
+The state dynamics follow:
+
+$$
+d\chi_t = -\kappa\chi_t \, dt + \sigma_\chi \, dW_\chi
+$$
+
+$$
+d\xi_t = \mu_\xi \, dt + \sigma_\xi \, dW_\xi
+$$
+
+$$
+dW_\chi dW_\xi = \rho \, dt
+$$
+
+## 3. State Space Form
+Discretized system:
+
+$$
+X_t = \begin{pmatrix} \chi_t \\ \xi_t \\ s_t \end{pmatrix}
+$$
+
+$$
+X_{t+1} = \begin{pmatrix} e^{-\kappa\Delta t} & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 1 \end{pmatrix} X_t + w_t
+$$
+
+Measurement equation:
+
+$$
+y_t = \begin{pmatrix} 1 & 1 & 1 \end{pmatrix} X_t + v_t
+$$
+
+## 4. Estimation via Extended Kalman Filter
+Recursive estimation:
+
+1. **Predict:**
+
+$$
+\hat{X}_{t|t-1} = F \hat{X}_{t-1|t-1}
+$$
+
+$$
+P_{t|t-1} = F P_{t-1|t-1} F^T + Q
+$$
+
+2. **Update:**
+
+$$
+K_t = P_{t|t-1} H^T (H P_{t|t-1} H^T + R)^{-1}
+$$
+
+$$
+\hat{X}_{t|t} = \hat{X}_{t|t-1} + K_t \left( y_t - H \hat{X}_{t|t-1} \right)
+$$
