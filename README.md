@@ -2,6 +2,7 @@
 
 An implementation of the Schwartz-Smith model for commodity price analysis and forecasting, featuring Extended Kalman Filter state estimation and automated parameter optimization.
 
+Interact with the project at https://commoditypriceprediction-schwartzsmith.streamlit.app/
 ## Overview
 
 This tool implements the Schwartz-Smith two-factor model with an additional seasonal component for commodity price analysis. It combines:
