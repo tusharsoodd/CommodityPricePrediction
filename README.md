@@ -1,73 +1,99 @@
-# Mathematical Framework for Price Decomposition and State Estimation
+# Schwartz-Smith Commodity Price Analysis Tool
 
-This repository contains the implementation of a mathematical framework used for modeling the log spot price of a commodity, as well as the estimation of underlying state variables using an Extended Kalman Filter (EKF). The framework models the dynamics of price decomposition into short-term, long-term, and seasonal components and employs state-space models for recursive estimation.
+A sophisticated implementation of the Schwartz-Smith model for commodity price analysis and forecasting, featuring Extended Kalman Filter state estimation and automated parameter optimization.
 
 ## Overview
 
-The model consists of the following main components:
+This tool implements the Schwartz-Smith two-factor model with an additional seasonal component for commodity price analysis. It combines:
+- Extended Kalman Filter for state estimation
+- Bayesian optimization for parameter tuning
+- Trading signal generation
+- Interactive visualization through Streamlit
 
-1. **Price Decomposition**: The log spot price is decomposed into a short-term mean-reverting component, a long-term equilibrium level, and a seasonal component.
-2. **State Evolution**: The state variables follow certain stochastic differential equations (SDEs) to model their evolution over time.
-3. **State Space Form**: A discretized system is defined for efficient computation, with a measurement equation for incorporating observed data.
-4. **Extended Kalman Filter (EKF)**: A recursive algorithm to predict and update the state estimates based on noisy observations.
+## Features
 
-## Mathematical Framework
+- **Advanced Price Modeling**
+  - Three-factor decomposition (short-term, long-term, seasonal)
+  - Extended Kalman Filter state estimation
+  - Automated parameter optimization
 
-### 1. Price Decomposition
+- **Trading Signals**
+  - Model-based buy/sell signal generation
+  - Performance metrics calculation
+  - Risk analysis
 
-The log spot price of a commodity is modeled as:
-
-$$
-\ln(S_t) = \chi_t + \xi_t + s_t
-$$
-
-where:
-- $\chi_t$: short-term mean-reverting component
-- $\xi_t$: long-term equilibrium level
-- $s_t$: seasonal component
-
-### 2. State Evolution
-
-The state dynamics follow:
-
-$$
-d\chi_t = -\kappa\chi_t \, dt + \sigma_\chi \, dW_\chi
-$$
-
-$$
-d\xi_t = \mu_\xi \, dt + \sigma_\xi \, dW_\xi
-$$
-
-$$
-dW_\chi dW_\xi = \rho \, dt
-$$
-
-### 3. State Space Form
-
-Discretized system:
-
-$$
-X_t = \begin{pmatrix} \chi_t \\ \xi_t \\ s_t \end{pmatrix}
-$$
-
-$$
-X_{t+1} = \begin{pmatrix} e^{-\kappa\Delta t} & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 1 \end{pmatrix} X_t + w_t
-$$
-
-Measurement equation:
-
-$$
-y_t = \begin{pmatrix} 1 & 1 & 1 \end{pmatrix} X_t + v_t
-$$
-
-### 4. Estimation via Extended Kalman Filter
-
-Recursive estimation using EKF:
-
-- **Predict**: Update predicted state and covariance
-- **Update**: Correct the predicted state using the measurement
+- **Visualization**
+  - Interactive price predictions
+  - Factor contribution analysis
+  - Error distribution analysis
+  - Model diagnostics
 
 ## Installation
 
-To use this framework, clone the repository:
+1. Clone the repository: 
+```
+bash
+git clone https://github.com/yourusername/schwartz-smith-analysis.git
+cd schwartz-smith-analysis
+```
+
+2. Install dependencies:
+```
+bash
+pip install -r requirements.txt
+```
+
+## Usage
+
+1. Launch the Streamlit interface:
+```
+bash
+streamlit run gui.py
+```
+
+
+## Project Structure
+```
+├── gui.py # Streamlit interface\n
+├── schwartzSmith.py # Core model implementation
+├── TradingSignals.py # Trading signal generation
+├── visualization_utils.py # Plotting utilities
+└── requirements.txt # Project dependencies
+```
+
+## Model Components
+
+### Schwartz-Smith Model
+- Short-term mean-reverting component
+- Long-term random walk component
+- Seasonal factor
+- Extended Kalman Filter implementation
+
+### Trading Signals
+- Model-based signal generation
+- Performance metrics
+- Risk analysis
+
+### Visualization
+- Price predictions
+- Factor decomposition
+- Error analysis
+- Diagnostic plots
+
+## Dependencies
+
+```
+numpy>=1.21.0
+pandas>=1.3.0
+yfinance>=0.2.0
+streamlit>=1.24.0
+matplotlib>=3.4.0
+scikit-learn>=0.24.0
+filterpy>=1.4.5
+scipy>=1.7.0
+plotly>=5.3.0
+seaborn>=0.11.0
+scikit-optimize>=0.9.0
+```
+
 
